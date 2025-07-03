@@ -5,10 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
-import com.example.project1.ui.HomeScreen // ✅ HomeScreen import 추가
+import com.example.project1.ui.MainApp  // ✅ MainApp을 import
 import com.example.project1.ui.theme.Project1Theme
 
 class MainActivity : ComponentActivity() {
@@ -17,14 +15,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Project1Theme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    HomeScreen(
-                        modifier = Modifier
-                            .fillMaxSize()               // ✅ 꼭 추가!
-                            .padding(innerPadding)
-                    )
-                }
-
+                MainApp()  // ✅ 이 한 줄로 모든 화면 네비게이션 관리
             }
         }
     }

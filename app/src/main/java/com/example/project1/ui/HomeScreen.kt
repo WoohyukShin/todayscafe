@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -19,9 +20,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.project1.R
+import androidx.navigation.NavHostController
+
+
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier,
+fun HomeScreen(navController: NavHostController,
+               modifier: Modifier = Modifier,
                userName: String = "지영") {
     var selectedTab by remember { mutableStateOf("카페 큐레이션") }
     var todayIndex by remember { mutableStateOf(0) }
@@ -90,49 +95,61 @@ fun TagTabs(selected: String, onSelect: (String) -> Unit) {
             val isSelected = tab == selected
             Box(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(20.dp))
-                    .background(if (isSelected) Color(0xFFB3E5FC) else Color.LightGray)
+                    .clip(RoundedCornerShape(32.dp)) // 둥글게
+                    .background(if (isSelected) Color(0xFFB388FF) else Color(0xFFF3F3F3))
                     .clickable { onSelect(tab) }
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .padding(horizontal = 20.dp, vertical = 10.dp)
+                    .shadow(elevation = if (isSelected) 4.dp else 0.dp, shape = RoundedCornerShape(32.dp))
             ) {
                 Text(
                     text = tab,
-                    color = if (isSelected) Color.Black else Color.DarkGray
+                    color = if (isSelected) Color.White else Color(0xFF555555),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold
                 )
             }
         }
     }
 }
 
+
 @Composable
 fun TodayCafeCard(userName: String, message: String, onShuffle: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFFFFE0DC), RoundedCornerShape(24.dp))
-            .padding(20.dp)
+            .shadow(6.dp, RoundedCornerShape(28.dp))
+            .background(Color(0xFFFEEAE6), RoundedCornerShape(28.dp))
+            .padding(24.dp)
     ) {
         Column {
-            Text("$userName 님,\n오늘은 이런 카페 어때요?", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Text(
+                "$userName 님,\n오늘은 이런 카페 어때요?",
+                fontSize = 22.sp,
+                fontWeight = FontWeight.ExtraBold,
+                color = Color(0xFF4E4E4E)
+            )
             Spacer(modifier = Modifier.height(8.dp))
-            Text(message, fontSize = 16.sp, color = Color.DarkGray)
-            Spacer(modifier = Modifier.height(8.dp))
+            Text(message, fontSize = 16.sp, color = Color(0xFF777777))
+            Spacer(modifier = Modifier.height(12.dp))
             Button(
                 onClick = onShuffle,
-                modifier = Modifier.align(Alignment.End),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.White)
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .clip(RoundedCornerShape(20.dp)),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB388FF))
             ) {
-                Text("다른 추천 보기")
+                Text("다른 추천 보기", color = Color.White)
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(20.dp))
             Image(
                 painter = painterResource(id = R.drawable.img_coffee_main),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(150.dp)
-                    .clip(RoundedCornerShape(16.dp))
+                    .height(160.dp)
+                    .clip(RoundedCornerShape(20.dp))
             )
         }
     }
@@ -140,29 +157,35 @@ fun TodayCafeCard(userName: String, message: String, onShuffle: () -> Unit) {
 
 @Composable
 fun CafeFeedList(feed: List<String>) {
-    Column {
+    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         feed.forEach { cafeName ->
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp)
-                    .background(Color(0xFFDFF1FF), RoundedCornerShape(16.dp))
+                    .shadow(4.dp, RoundedCornerShape(20.dp))
+                    .background(Color(0xFFECEFF1), RoundedCornerShape(20.dp))
                     .padding(16.dp)
             ) {
                 Column {
-                    Text(cafeName, fontWeight = FontWeight.Bold, fontSize = 18.sp)
-                    Spacer(modifier = Modifier.height(6.dp))
+                    Text(
+                        cafeName,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp,
+                        color = Color(0xFF333333)
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
                     Image(
                         painter = painterResource(id = R.drawable.img_cafe_sample),
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(120.dp)
-                            .clip(RoundedCornerShape(12.dp))
+                            .height(140.dp)
+                            .clip(RoundedCornerShape(16.dp))
                     )
                 }
             }
         }
     }
 }
+
