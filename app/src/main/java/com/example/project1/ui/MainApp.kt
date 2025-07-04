@@ -22,5 +22,6 @@ fun MainApp() {
         composable("mylist") { MyCafeListScreen(navController) }
         composable("setting") { Setting(navController) }
         composable("info") { Profile(navController) }
+        composable("cafeinfo") { CafeInfo(navController) }
     }
 }

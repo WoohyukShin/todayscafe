@@ -59,22 +59,19 @@ fun FollowerScreen(
     val cafeSample = CafeInfo(
         cid = "1",
         name = "cafe1",
-        imageURL = "android.resource://com.example.project1" + R.drawable.cafeimage_example
+        imageURL = R.drawable.cafeimage_example
     )
     val userSample = User(
-            uid = "1",
-            name = "우혁",
-            followers = emptyList(),
-            recommendation = listOf(cafeSample, cafeSample, cafeSample, cafeSample)
+        uid = "1",
+        name = "우혁",
+        recommendation = listOf(cafeSample, cafeSample, cafeSample, cafeSample),
     )
     val followers = listOf (
         userSample, userSample, userSample, userSample, userSample
    )
 
     Scaffold(
-        topBar = {
-            TopTabs(navController = navController) {}
-        },
+        
         bottomBar = {
             BottomTabs(navController = navController, selectedTab) { selectedTab = it }
         }
