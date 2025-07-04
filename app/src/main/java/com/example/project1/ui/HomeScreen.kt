@@ -15,6 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -52,6 +53,7 @@ fun HomeScreen(navController: NavHostController,
         Column(
             modifier = modifier
                 .fillMaxSize()
+                .background(colorResource(R.color.beige))
                 .verticalScroll(rememberScrollState())
                 .padding(innerPadding)
                 .padding(16.dp)

@@ -1,5 +1,6 @@
 package com.example.project1.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -17,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -78,6 +80,7 @@ fun FollowerScreen(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
                 .fillMaxSize()
+                .background(colorResource(R.color.beige))
                 .padding(innerPadding)
                 .padding(24.dp)
         ) {

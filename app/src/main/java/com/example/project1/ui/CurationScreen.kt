@@ -1,5 +1,6 @@
 package com.example.project1.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -9,10 +10,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.project1.R
 
 @Composable
 fun CurationScreen(
@@ -30,6 +33,7 @@ fun CurationScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(colorResource(R.color.beige))
                 .padding(innerPadding)
                 .padding(24.dp)
         ) {
