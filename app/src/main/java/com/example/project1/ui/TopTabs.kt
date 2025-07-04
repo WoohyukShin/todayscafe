@@ -1,18 +1,15 @@
 package com.example.project1.ui
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.background
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
@@ -22,61 +19,71 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.project1.R
-import androidx.navigation.NavHostController
-
 
 @Composable
 fun TopTabs(navController: NavController, onSelect: (String) -> Unit) {
-
     val tabs = listOf(
-        "setting" to painterResource(R.drawable.ic_launcher_foreground),
-        "info" to painterResource(R.drawable.ic_launcher_foreground)
+        "setting" to painterResource(R.drawable.ic_setting),
+        "info" to painterResource(R.drawable.ic_info)
     )
 
-    Row(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(colorResource(R.color.tab))
-            .padding(vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    )
-    {
-        Row(verticalAlignment = Alignment.CenterVertically){
-            Icon(
-                painter = painterResource(R.drawable.ic_launcher_foreground),
-                contentDescription = "Logo"
+            .height(70.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .background(Color(0xFFF8E3B6).copy(alpha = 0.8f))
+                .blur(20.dp)
+        )
+
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(R.drawable.ic_logo),
+                contentDescription = "Logo",
+                modifier = Modifier.size(80.dp)
             )
-            Spacer(Modifier.width(8.dp))
-            Text("살려주세요", fontWeight = FontWeight.Bold)
-        }
 
-        Spacer(modifier = Modifier.weight(0.7f))
+            Spacer(Modifier.weight(1f))
 
-        tabs.forEach { (route, image) ->
-            Row(
-                modifier = Modifier
-                    .clickable {
-                        navController.navigate(route) {
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    }
-            ) {
-                Icon(
-                    painter = image,
-                    contentDescription = route,
+            tabs.forEach { (route, image) ->
+                Column(
                     modifier = Modifier
-                        .size(32.dp)
+                        .padding(horizontal = 8.dp)
                         .clickable {
                             navController.navigate(route) {
                                 launchSingleTop = true
                                 restoreState = true
                             }
+                            onSelect(route)
                         },
-                    tint = Color.White
-                )
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        painter = image,
+                        contentDescription = route,
+                        modifier = Modifier.size(28.dp),
+                        tint = Color.Unspecified
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = when (route) {
+                            "setting" -> "세팅"
+                            "info" -> "인포"
+                            else -> route
+                        },
+                        fontSize = 11.sp,
+                        color = Color.White
+                    )
+                }
             }
         }
     }
 }
-
