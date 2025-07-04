@@ -46,6 +46,9 @@ fun HomeScreen(navController: NavHostController,
     )
 
     Scaffold(
+        topBar = {
+            TopTabs(navController = navController) {}
+        },
         bottomBar = {
             BottomTabs(navController = navController, selectedTab) { selectedTab = it }
         }

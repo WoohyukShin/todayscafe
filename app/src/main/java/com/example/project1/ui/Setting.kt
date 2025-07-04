@@ -18,7 +18,7 @@ import androidx.navigation.NavHostController
 import com.example.project1.R
 
 @Composable
-fun MyCafeListScreen(
+fun Setting(
     navController: NavHostController,
     modifier: Modifier = Modifier,
 ) {
@@ -39,7 +39,7 @@ fun MyCafeListScreen(
                 .padding(24.dp)
         ) {
             Text(
-                text = "내 카페리스트 페이지",
+                text = "Setting",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold
             )

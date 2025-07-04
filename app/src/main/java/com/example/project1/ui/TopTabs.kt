@@ -26,59 +26,57 @@ import androidx.navigation.NavHostController
 
 
 @Composable
-fun TopTabs(navController: NavController, selected: String, onSelect: (String) -> Unit) {
+fun TopTabs(navController: NavController, onSelect: (String) -> Unit) {
+
     val tabs = listOf(
-        Triple("Home", "home", painterResource(R.drawable.bottomtab_home)),
-        Triple("팔로워", "followers", painterResource(R.drawable.bottomtab_home)),
-        Triple("카페 큐레이션", "curation", painterResource(R.drawable.bottomtab_home)),
-        Triple("내 카페리스트", "mylist", painterResource(R.drawable.bottomtab_home))
+        "setting" to painterResource(R.drawable.ic_launcher_foreground),
+        "info" to painterResource(R.drawable.ic_launcher_foreground)
     )
+
     Row(
-        modifier = Modifier.fillMaxWidth()
-            .background(colorResource(R.color.beige))
-            .padding(vertical=8.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly,
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(colorResource(R.color.tab))
+            .padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
-    ) {
-        tabs.forEach { (tab, route, image) ->
-            val isSelected = tab == selected
-            Box(
+    )
+    {
+        Row(verticalAlignment = Alignment.CenterVertically){
+            Icon(
+                painter = painterResource(R.drawable.ic_launcher_foreground),
+                contentDescription = "Logo"
+            )
+            Spacer(Modifier.width(8.dp))
+            Text("살려주세요", fontWeight = FontWeight.Bold)
+        }
+
+        Spacer(modifier = Modifier.weight(0.7f))
+
+        tabs.forEach { (route, image) ->
+            Row(
                 modifier = Modifier
-                    .background(colorResource(R.color.brown))
-                    .clickable { onSelect(tab) }
-                    .shadow(elevation = if (isSelected) 4.dp else 0.dp, shape = RoundedCornerShape(32.dp))
+                    .clickable {
+                        navController.navigate(route) {
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
             ) {
-                Column(
+                Icon(
+                    painter = image,
+                    contentDescription = route,
                     modifier = Modifier
-                        .clip(RoundedCornerShape(24.dp))
-                        .background(colorResource(R.color.brown))
+                        .size(32.dp)
                         .clickable {
-                            onSelect(tab)
                             navController.navigate(route) {
                                 launchSingleTop = true
                                 restoreState = true
                             }
-                        }
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Image(
-                        painter = image,
-                        contentDescription = tab,
-                        modifier = Modifier.size(24.dp)
-                    )
-
-                    Spacer(modifier = Modifier.height(4.dp))
-
-                    Text(
-                        text = tab,
-                        color = colorResource(R.color.white),
-                        fontSize = if (tab.length > 5) 10.sp else 14.sp,
-                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                    )
-                }
+                        },
+                    tint = Color.White
+                )
             }
         }
     }
 }
+

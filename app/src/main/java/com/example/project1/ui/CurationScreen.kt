@@ -26,6 +26,9 @@ fun CurationScreen(
     var selectedTab by remember { mutableStateOf("카페 큐레이션") }
 
     Scaffold(
+        topBar = {
+            TopTabs(navController = navController) {}
+        },
         bottomBar = {
             BottomTabs(navController = navController, selectedTab) { selectedTab = it }
         }

@@ -20,5 +20,7 @@ fun MainApp() {
         composable("followers") { FollowerScreen(navController) }
         composable("curation") { CurationScreen(navController) }
         composable("mylist") { MyCafeListScreen(navController) }
+        composable("setting") { Setting(navController) }
+        composable("info") { Profile(navController) }
     }
 }
