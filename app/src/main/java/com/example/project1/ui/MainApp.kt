@@ -17,8 +17,8 @@ fun MainApp() {
 
     NavHost(navController = navController, startDestination = "home") {
         composable("home") { HomeScreen(navController) }
-        composable("followers") { FollowerScreen() }
-        composable("curation") { CurationScreen() }
-        composable("mylist") { MyCafeListScreen() }
+        composable("followers") { FollowerScreen(navController) }
+        composable("curation") { CurationScreen(navController) }
+        composable("mylist") { MyCafeListScreen(navController) }
     }
 }

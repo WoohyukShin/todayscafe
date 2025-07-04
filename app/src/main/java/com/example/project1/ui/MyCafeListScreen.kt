@@ -1,26 +1,42 @@
 package com.example.project1.ui
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 
 @Composable
-fun MyCafeListScreen() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp)
-    ) {
-        Text(
-            text = "내 카페리스트 페이지",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        // 내가 저장한 카페, 메모 기능 등을 여기에 넣어도 좋아
+fun MyCafeListScreen(
+    navController: NavHostController,
+    modifier: Modifier = Modifier,
+) {
+    var selectedTab by remember { mutableStateOf("내 카페리스트") }
+    Scaffold(
+        bottomBar = {
+            BottomTabs(navController = navController, selectedTab) { selectedTab = it }
+        }
+    ){ innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(24.dp)
+        ) {
+            Text(
+                text = "내 카페리스트 페이지",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+        }
     }
 }

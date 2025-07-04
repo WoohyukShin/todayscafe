@@ -1,26 +1,109 @@
 package com.example.project1.ui
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import coil3.compose.AsyncImage
+import com.example.project1.R
+import com.example.project1.model.*
 
 @Composable
-fun FollowerScreen() {
-    Column(
+fun followerCafeCard(
+    cafeInfo: CafeInfo
+) {
+    Card(
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(4.dp),
         modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp)
-    ) {
-        Text(
-            text = "팔로워 페이지",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
+            .width(120.dp)
+            .height(140.dp)
+    ){
+        AsyncImage(
+            model = cafeInfo.imageURL,
+            contentDescription = cafeInfo.name,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
         )
-        Spacer(modifier = Modifier.height(16.dp))
-        // 여기에 팔로우한 카페 리스트, 플레이리스트 등을 추가해도 좋아
+
+    }
+}
+
+@Composable
+fun FollowerScreen(
+    navController: NavHostController,
+    modifier: Modifier = Modifier,
+) {
+    var selectedTab by remember { mutableStateOf("팔로워") }
+
+    // for testing
+    val cafeSample = CafeInfo(
+        cid = "1",
+        name = "cafe1",
+        imageURL = "android.resource://com.example.project1" + R.drawable.cafeimage_example
+    )
+    val userSample = User(
+            uid = "1",
+            name = "우혁",
+            followers = emptyList(),
+            recommendation = listOf(cafeSample, cafeSample, cafeSample, cafeSample)
+    )
+    val followers = listOf (
+        userSample, userSample, userSample, userSample, userSample
+   )
+
+    Scaffold(
+        bottomBar = {
+            BottomTabs(navController = navController, selectedTab) { selectedTab = it }
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(24.dp)
+        ) {
+            Text(
+                text = "팔로워 페이지",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            followers.forEach { user ->
+                Text(
+                    text = user.name + "님의 pick"
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    modifier = Modifier
+                        .horizontalScroll(rememberScrollState())
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ){
+                    user.recommendation.forEach { cafeInfo ->
+                        followerCafeCard(cafeInfo)
+                    }
+                }
+            }
+        }
     }
 }

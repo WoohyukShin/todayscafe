@@ -19,6 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.project1.R
 import androidx.navigation.NavHostController
 
@@ -28,7 +29,7 @@ import androidx.navigation.NavHostController
 fun HomeScreen(navController: NavHostController,
                modifier: Modifier = Modifier,
                userName: String = "지영") {
-    var selectedTab by remember { mutableStateOf("카페 큐레이션") }
+    var selectedTab by remember { mutableStateOf("Home") }
     var todayIndex by remember { mutableStateOf(0) }
 
     val todayCafeList = listOf(
@@ -43,75 +44,29 @@ fun HomeScreen(navController: NavHostController,
         "내 카페리스트" to listOf("내가 저장한 카페1", "내가 저장한 카페2")
     )
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp)
-    )
- {
-        TopBar()
-        Spacer(modifier = Modifier.height(16.dp))
-        TagTabs(selectedTab) { selectedTab = it }
-        Spacer(modifier = Modifier.height(20.dp))
-        TodayCafeCard(userName, todayCafeList[todayIndex]) {
-            todayIndex = (todayIndex + 1) % todayCafeList.size
+    Scaffold(
+        bottomBar = {
+            BottomTabs(navController = navController, selectedTab) { selectedTab = it }
         }
-        Spacer(modifier = Modifier.height(24.dp))
-        CafeFeedList(feedMap[selectedTab] ?: emptyList())
-    }
-}
-
-@Composable
-fun TopBar() {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_leaf),
-            contentDescription = "logo",
-            modifier = Modifier.size(32.dp)
+    ) { innerPadding ->
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(innerPadding)
+                .padding(16.dp)
         )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text("홈", fontSize = 24.sp, fontWeight = FontWeight.Bold)
-        Spacer(modifier = Modifier.weight(1f))
-        IconButton(onClick = { }) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_menu),
-                contentDescription = "menu"
-            )
-        }
-    }
-}
-
-@Composable
-fun TagTabs(selected: String, onSelect: (String) -> Unit) {
-    Row(
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        listOf("팔로워", "카페 큐레이션", "내 카페리스트").forEach { tab ->
-            val isSelected = tab == selected
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(32.dp)) // 둥글게
-                    .background(if (isSelected) Color(0xFFB388FF) else Color(0xFFF3F3F3))
-                    .clickable { onSelect(tab) }
-                    .padding(horizontal = 20.dp, vertical = 10.dp)
-                    .shadow(elevation = if (isSelected) 4.dp else 0.dp, shape = RoundedCornerShape(32.dp))
-            ) {
-                Text(
-                    text = tab,
-                    color = if (isSelected) Color.White else Color(0xFF555555),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
+        {
+            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(20.dp))
+            TodayCafeCard(userName, todayCafeList[todayIndex]) {
+                todayIndex = (todayIndex + 1) % todayCafeList.size
             }
+            Spacer(modifier = Modifier.height(24.dp))
+            CafeFeedList(feedMap[selectedTab] ?: emptyList())
         }
     }
 }
-
 
 @Composable
 fun TodayCafeCard(userName: String, message: String, onShuffle: () -> Unit) {
