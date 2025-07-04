@@ -2,9 +2,11 @@ package com.example.project1.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -16,11 +18,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.rounded.BookmarkBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
@@ -31,34 +35,72 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.project1.R
+import kotlinx.coroutines.delay
 
 data class CafeItem(
-    val name: String,
-    val tags: String,
-    val imageRes: Int,
-    val scrapCount: Int
+    val title: String,
+    val tags: List<String>,
+    val count: String,
+    val imageRes: Int
 )
+
+
 data class Question(
     val emoji: String,
     val question: String,
     val hint: String = "입력해주세요..."
 )
 
+
 data class Recommendation(val title: String, val description: String, val imageRes: Int)
 
 val recommendationList = listOf(
-    Recommendation("Strawberry Latte", "Fresh & Sweet", R.drawable.img_cafe_sample),
-    Recommendation("Matcha Cream", "Earthy & Smooth", R.drawable.img_cafe_sample2),
-    Recommendation("Caramel Macchiato", "Rich & Sweet", R.drawable.img_cafe_sample3)
+    Recommendation("스타벅스", "공부하기 최적의 장소", R.drawable.img_cafe_sample),
+    Recommendation("메이크어케이크", "브런치가 맛있는 곳", R.drawable.img_cafe_sample2),
+    Recommendation("빽다방", "가성비 챙기세요~", R.drawable.img_cafe_sample3)
 )
 
 data class InfoItem(val title: String, val content: String)
 
-val cardInfoList = listOf(
-    InfoItem("우리의 철학", "카페는 분위기입니다."),
-    InfoItem("지역 큐레이터 소개", "믿을 수 있는 추천"),
-    InfoItem("문의하기", "언제든지 편하게 연락주세요.")
+data class CafeListItem(
+    val title: String,
+    val username: String,
+    val imageRes: Int,
+
 )
+
+
+val trendingCafeLists = listOf(
+    CafeListItem("카공족을 위한", "@사용자1", R.drawable.img_cafe_sample4),
+    CafeListItem("분좋카 모음", "@사용자2", R.drawable.img_cafe_sample5),
+    CafeListItem("고양이를 볼 수 있는", "@사용자3", R.drawable.img_cafe_sample6),
+    CafeListItem("이국적인 메뉴가 있는", "@사용자4", R.drawable.img_cafe_sample7)
+)
+
+@Composable
+fun TypewriterText(
+    text: String,
+    speed: Long = 50L, // 타자 속도 (ms)
+    modifier: Modifier = Modifier,
+    style: TextStyle = LocalTextStyle.current
+) {
+    var visibleText by remember { mutableStateOf("") }
+
+    LaunchedEffect(text) {
+        visibleText = ""
+        for (i in text.indices) {
+            visibleText += text[i]
+            delay(speed)
+        }
+    }
+
+    Text(
+        text = visibleText,
+        style = style,
+        modifier = modifier
+    )
+}
+
 
 
 @Composable
@@ -68,7 +110,7 @@ fun RecommendationCard(item: Recommendation) {
         modifier = Modifier
             .padding(end = 8.dp)
             .width(160.dp)
-            .height(200.dp)
+            .height(220.dp)
     ) {
         Column {
             Image(
@@ -82,23 +124,26 @@ fun RecommendationCard(item: Recommendation) {
             Column(modifier = Modifier.padding(8.dp)) {
                 Text(item.title, fontWeight = FontWeight.Bold)
                 Text(item.description, fontSize = 12.sp, color = Color.Gray)
-            }
-        }
-    }
-}
 
-@Composable
-fun InfoCard(item: InfoItem) {
-    Card(
-        shape = RoundedCornerShape(12.dp),
-        modifier = Modifier
-            .padding(end = 8.dp)
-            .width(200.dp)
-            .height(100.dp)
-    ) {
-        Column(modifier = Modifier.padding(12.dp)) {
-            Text(item.title, fontWeight = FontWeight.Bold)
-            Text(item.content, fontSize = 12.sp, color = Color.Gray)
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.BookmarkBorder,
+                        contentDescription = "Scrap Icon",
+                        tint = Color(0xFF7A4E2D),
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "${(10..99).random()}", // 임시로 랜덤
+                        fontSize = 12.sp,
+                        color = Color.Gray
+                    )
+                }
+
+            }
         }
     }
 }
@@ -172,7 +217,12 @@ fun CurationScreen(
 
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth() // ✅ 가로 전체 채우기
+                    .border(
+                        width = 2.dp,
+                        color = Color(0xFF834D1E),
+                        shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
+                    ) // ✅ 갈색 테두리
                     .background(
                         color = Color(0xFFF8E3B6),
                         shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
@@ -197,43 +247,47 @@ fun CurationScreen(
                             )
 
                             val cafeList = listOf(
-                                Triple("XXXXXX카페", listOf("#공부하기 좋은", "#조용한", "#2층"), "13"),
-                                Triple("XXXXXX 카페", listOf("#디저트가 맛있는", "#감성있는", "#고양이가 있는"), "4"),
-                                Triple("XXXXX 카페", listOf("#데이트 하기 좋은", "#아늑한", "#주차장 있는"), "0"),
-                                Triple("XXXXXX 카페", listOf("#달달한 디저트", "#조용한", "#예쁜 조명"), "7"),
-                                Triple("XXXXXXX 카페", listOf("#브런치 맛집", "#햇살 좋은", "#루프탑"), "5"),
-                                Triple("XXXXX 카페", listOf("#인테리어 감성", "#빈티지 소품", "#셀카 맛집"), "9"),
-                                Triple("XXXXX 카페", listOf("#콘센트 많음", "#스터디룸 있음", "#조용한"), "2"),
+                                CafeItem("XXXXXX카페", listOf("#공부하기 좋은", "#조용한", "#2층"), "13",R.drawable.img_cafe_sample),
+                                CafeItem("XXXXXX 카페", listOf("#디저트가 맛있는", "#감성있는", "#고양이가 있는"), "4",R.drawable.img_cafe_sample2),
+                                CafeItem("XXXXX 카페", listOf("#데이트 하기 좋은", "#아늑한", "#주차장 있는"), "0",R.drawable.img_cafe_sample3),
+                                CafeItem("XXXXXX 카페", listOf("#달달한 디저트", "#조용한", "#예쁜 조명"), "7",R.drawable.img_cafe_sample4),
+                                CafeItem("XXXXXXX 카페", listOf("#브런치 맛집", "#햇살 좋은", "#루프탑"), "5",R.drawable.img_cafe_sample5),
+                                CafeItem("XXXXX 카페", listOf("#인테리어 감성", "#빈티지 소품", "#셀카 맛집"), "9",R.drawable.img_cafe_sample6),
+                                CafeItem("XXXXX 카페", listOf("#콘센트 많음", "#스터디룸 있음", "#조용한"), "2",R.drawable.img_cafe_sample7),
                             )
 
-                            cafeList.forEach { (title, tags, count) ->
+                            cafeList.forEach { cafe ->
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(vertical = 8.dp),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Box(
+                                    Image(
+                                        painter = painterResource(id = cafe.imageRes),
+                                        contentDescription = null,
                                         modifier = Modifier
                                             .size(60.dp)
-                                            .clip(RoundedCornerShape(8.dp))
-                                            .background(Color.Gray)
+                                            .clip(RoundedCornerShape(8.dp)),
+                                        contentScale = ContentScale.Crop
                                     )
+
                                     Spacer(modifier = Modifier.width(12.dp))
                                     Column(modifier = Modifier.weight(1f)) {
-                                        Text(title, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                                        tags.forEach {
+                                        Text(cafe.title, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                                        cafe.tags.forEach {
                                             Text(text = it, fontSize = 12.sp, color = Color.DarkGray)
                                         }
                                     }
                                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                        Text(count, fontSize = 12.sp, color = Color.DarkGray)
+                                        Text(cafe.count, fontSize = 12.sp, color = Color.DarkGray)
                                         IconButton(onClick = { }) {
-                                            Icon(Icons.Default.Add, contentDescription = "Save", tint = brown)
+                                            Icon(Icons.Rounded.BookmarkBorder, contentDescription = "Save", tint = brown)
                                         }
                                     }
                                 }
                             }
+
                         }
                     }
 
@@ -258,7 +312,7 @@ fun CurationScreen(
 @Composable
 fun PersonalizedQuestionStack() {
     val questionList = listOf(
-        Question("😊", "오늘의 기분은 어떠세요? :)"),
+        Question("😊", "오늘의 기분은 어떠세요?"),
         Question("☕", "오늘 뭐하실 예정이세요?"),
         Question("☁️", "오늘의 날씨는 어때요?"),
         Question("👫", "누구와 함께 가시나요?"),
@@ -289,11 +343,26 @@ fun PersonalizedQuestionStack() {
                                 fontSize = 28.sp,
                                 modifier = Modifier.padding(end = 12.dp)
                             )
-                            Text(
-                                text = question.question,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 16.sp
-                            )
+
+                            // ✅ 질문 텍스트에 타자 애니메이션 적용
+                            if (answers.size == i) {
+                                TypewriterText(
+                                    text = question.question,
+                                    speed = 40L,
+                                    style = TextStyle(
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 16.sp,
+                                        color = Color(0xFF5C3D2E)
+                                    )
+                                )
+                            } else {
+                                Text(
+                                    text = question.question,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 16.sp,
+                                    color = Color(0xFF5C3D2E)
+                                )
+                            }
                         }
 
                         if (answers.size > i) {
@@ -331,7 +400,6 @@ fun PersonalizedQuestionStack() {
                             ) {
                                 Text("다음")
                             }
-
                         }
                     }
                 }
@@ -343,11 +411,12 @@ fun PersonalizedQuestionStack() {
 
 @Composable
 fun HotNowScreen() {
+    val scrollState = rememberScrollState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp)
-            .verticalScroll(rememberScrollState())
     ) {
         // 상단
         Card(
@@ -362,7 +431,7 @@ fun HotNowScreen() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Text("Best seller of the week", color = Color.White, fontSize = 14.sp)
+                    Text("이번 주, 가장 사랑받은 카페 🤍", color = Color.White, fontSize = 12.sp)
                     Text(
                         "Iced Coffee\nSweet Heaven",
                         color = Color.White,
@@ -383,53 +452,128 @@ fun HotNowScreen() {
             }
         }
 
-        // 그다음
+        // 랭크
         Text(
-            "This week’s recommendations",
+            "요즘 사람들이 찾는 카페는?",
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp,
             modifier = Modifier.padding(top = 24.dp, bottom = 8.dp)
         )
-        LazyRow {
-            items(recommendationList) { item ->
+
+        Row(
+            modifier = Modifier
+                .horizontalScroll(rememberScrollState())
+        ) {
+            recommendationList.forEach { item ->
                 RecommendationCard(item)
             }
-
         }
 
-
-        // 그 다음
+        // 샵 이미지
         Text(
-            "What’s in the shop?",
+            "이런 공간, 요즘 좋아요",
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp,
             modifier = Modifier.padding(top = 24.dp, bottom = 8.dp)
         )
-        Card(
-            shape = RoundedCornerShape(16.dp),
-            modifier = Modifier.fillMaxWidth()
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(140.dp)
+                .clip(RoundedCornerShape(16.dp))
         ) {
             Image(
                 painter = painterResource(id = R.drawable.img_cafe_sample3),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(120.dp)
+                    .fillMaxSize()
+            )
+            Text(
+                text = "카페 로제",
+                color = Color.White,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(12.dp)
             )
         }
 
-        // 그다음
+
+        // Info 카드
         Text(
-            "A few words from us",
+            "요즘 뜨는 카페 리스트",
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp,
             modifier = Modifier.padding(top = 24.dp, bottom = 8.dp)
         )
-        LazyRow {
-            items(cardInfoList) { card ->
-                InfoCard(card)
+
+        Row(
+            modifier = Modifier
+                .horizontalScroll(rememberScrollState())
+        ) {
+            trendingCafeLists.forEach { item ->
+                CafeListCard(
+                    title = item.title,
+                    username = item.username,
+                    imageRes = item.imageRes
+                )
             }
+
+        }
+    }
+}
+
+
+@Composable
+fun CafeListCard(title: String, username: String, imageRes: Int) {
+    Box(
+        modifier = Modifier
+            .padding(end = 12.dp)
+            .width(160.dp)
+            .height(220.dp)
+            .clip(RoundedCornerShape(16.dp))
+    ) {
+        // 배경 이미지
+        Image(
+            painter = painterResource(id = imageRes),
+            contentDescription = title,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
+
+        // 그라데이션
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            Color(0x885C3B1A)
+                        )
+                    )
+                )
+        )
+
+        // 글씨
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(12.dp)
+        ) {
+            Text(
+                text = title,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFFFDF2E9) // 베이지
+            )
+            Text(
+                text = username,
+                fontSize = 12.sp,
+                color = Color(0xFFFDF2E9)
+            )
         }
     }
 }
