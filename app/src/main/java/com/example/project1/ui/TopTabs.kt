@@ -29,8 +29,8 @@ import androidx.navigation.NavHostController
 fun TopTabs(navController: NavController, onSelect: (String) -> Unit) {
 
     val tabs = listOf(
-        "setting" to painterResource(R.drawable.ic_launcher_foreground),
-        "info" to painterResource(R.drawable.ic_launcher_foreground)
+        "setting" to painterResource(R.drawable.ic_setting),
+        "info" to painterResource(R.drawable.ic_info)
     )
 
     Row(
@@ -42,41 +42,50 @@ fun TopTabs(navController: NavController, onSelect: (String) -> Unit) {
     )
     {
         Row(verticalAlignment = Alignment.CenterVertically){
-            Icon(
-                painter = painterResource(R.drawable.ic_launcher_foreground),
-                contentDescription = "Logo"
+            Image(
+                painter = painterResource(R.drawable.ic_logo),
+                contentDescription = "Logo",
+                modifier = Modifier.size(80.dp)
             )
+
             Spacer(Modifier.width(8.dp))
-            Text("살려주세요", fontWeight = FontWeight.Bold)
+
         }
 
         Spacer(modifier = Modifier.weight(0.7f))
 
         tabs.forEach { (route, image) ->
-            Row(
+            Column(
                 modifier = Modifier
+                    .padding(horizontal = 8.dp)
                     .clickable {
                         navController.navigate(route) {
                             launchSingleTop = true
                             restoreState = true
                         }
-                    }
+                        onSelect(route)
+                    },
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Icon(
                     painter = image,
                     contentDescription = route,
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clickable {
-                            navController.navigate(route) {
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        },
-                    tint = Color.White
+                    modifier = Modifier.size(32.dp),
+                    tint = Color.Unspecified
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = when (route) {
+                        "setting" -> "세팅"
+                        "info" -> "인포"
+                        else -> route
+                    },
+                    fontSize = 12.sp,
+                    color = Color.White
                 )
             }
         }
+
     }
 }
 

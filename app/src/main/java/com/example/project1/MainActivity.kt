@@ -15,7 +15,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Project1Theme {
-                MainApp()  // ✅ 이 한 줄로 모든 화면 네비게이션 관리
+                MainApp()
             }
         }
     }
